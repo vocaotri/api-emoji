@@ -1,6 +1,6 @@
 const emoijRoutes = (app, fs) => {
   const dataPath = "./data/emoji.json";
-  app.use("/emojis", (req, res) => {
+  app.get("/emojis", (req, res) => {
     fs.readFile(dataPath, "utf8", (err, data) => {
       if (err) {
         throw err;
@@ -20,6 +20,9 @@ const emoijRoutes = (app, fs) => {
         limit * currentPage - limit,
         limit * currentPage
       );
+      res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.header("Pragma", "no-cache");
+      res.header("Expires", 0);
       res.status(200).send({
         limit: limit,
         totalPage: totalPage,
