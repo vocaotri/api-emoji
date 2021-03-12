@@ -8,6 +8,7 @@ const emoijRoutes = (app, fs) => {
     res.header("Pragma", "no-cache");
     res.header("Expires", 0);
     res.header('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
     var key = JSON.stringify(req.query);
     var cacheBody = cache.get(key);
     if (cacheBody) {
