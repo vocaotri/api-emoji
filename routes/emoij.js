@@ -1,3 +1,4 @@
+var cache = require('memory-cache');
 const emoijRoutes = (app, fs) => {
   const dataPath = "./data/emoji.json";
   app.get("/emojis", (req, res) => {
@@ -5,7 +6,12 @@ const emoijRoutes = (app, fs) => {
       if (err) {
         throw err;
       }
-      var limit = parseInt(req.query.limit ?? 10);
+      var key = req.jsonResult
+      var cacheBody = cache.get(key);
+      if (cacheBody) {
+        res.send(cacheBody);
+      } else {
+        var limit = parseInt(req.query.limit ?? 10);
       var keyword = req.query.name ?? null;
       var totalItem = 0;
       var totalPage = 0;
@@ -20,16 +26,17 @@ const emoijRoutes = (app, fs) => {
         limit * currentPage - limit,
         limit * currentPage
       );
-      res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-      res.header("Pragma", "no-cache");
-      res.header("Expires", 0);
-      res.status(200).send({
+        var body = {
         limit: limit,
         totalPage: totalPage,
         totalItem: totalItem,
         currentPage: currentPage,
         data: jsonResult,
-      });
+      }
+        cache.put(key,body)
+      res.status(200).send(body);
+      }
+      
     });
   });
 };
