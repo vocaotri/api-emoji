@@ -1,6 +1,6 @@
 const emoijRoutes = (app, fs) => {
   const dataPath = "./data/emoji.json";
-  app.get("/emojis", (req, res) => {
+  app.use("/emojis", (req, res) => {
     fs.readFile(dataPath, "utf8", (err, data) => {
       if (err) {
         throw err;
